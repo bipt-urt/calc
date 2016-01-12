@@ -4,11 +4,12 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
+#include"1.h"
+#include"window_def.h"
+//1.h:sprintf封装
+//加法1 减法2 乘法3 除法4
+//window_def:窗体构造/析构函数封装
 
-void loading();
-void menu();
-void side();
-void quantity();
 void exam();
 void addtion();
 void subtraction();
@@ -16,7 +17,9 @@ void multiplication();
 void division();
 void mix();
 void judge();
+void calculation(); //新加入：运算函数
 void spf(int); //sprintf判断
+int mode; //1加法 2减法 3乘法 4除法 5混合运算
 
 IMAGE welcome;
 IMAGE confine;
@@ -48,136 +51,55 @@ void main()
     return;
 }
 
-void loading()
-{
-    settextstyle(30,0,_T("华文楷体"));
-    loadimage(&welcome,"images/welcome.jpg");
-    loadimage(&confine,"images/confine.jpg");
-    loadimage(&amount,"images/amount.jpg");
-    loadimage(&board,"images/board.jpg");
-    loadimage(&right,"images/right.jpg");
-    loadimage(&error,"images/error.jpg");
-}
-
-void menu()
-{
-    putimage(0,0,&welcome);
-    MOUSEMSG m;
-	while(true)
-	{
-		m=GetMouseMsg();
-		if(m.x>240&&m.x<460&&m.y>180&&m.y<230&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=1;
-			break;
-		}
-		else if(m.x>240&&m.x<460&&m.y>250&&m.y<300&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=2;
-			break;
-		}
-		else if(m.x>240&&m.x<460&&m.y>320&&m.y<370&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=3;
-			break;
-		}
-		else if(m.x>240&&m.x<460&&m.y>390&&m.y<440&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=4;
-			break;
-		}
-		else if(m.x>580&&m.x<740&&m.y>290&&m.y<330&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=5;
-			break;
-		}
-		else if(m.x>0&&m.x<130&&m.y>440&&m.y<510&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			choice=5250;
-			break;
-		}
-	}
-}
-
-void side()
-{
-	putimage(0,0,&confine);
-	MOUSEMSG m;
-	while(true)
-	{
-		m=GetMouseMsg();
-		if(m.x>220&&m.x<490&&m.y>150&&m.y<210&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			limit=10;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>240&&m.y<300&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			limit=20;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>330&&m.y<390&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			limit=50;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>420&&m.y<480&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			limit=100;
-			break;
-		}
-	}
-}
-
-void quantity()
-{
-	putimage(0,0,&amount);
-	MOUSEMSG m;
-	while(true)
-	{
-		m=GetMouseMsg();
-		if(m.x>220&&m.x<490&&m.y>150&&m.y<210&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			n=10;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>240&&m.y<300&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			n=20;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>330&&m.y<390&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			n=50;
-			break;
-		}
-		else if(m.x>220&&m.x<490&&m.y>420&&m.y<480&&m.uMsg==WM_LBUTTONDOWN)
-		{
-			n=100;
-			break;
-		}
-	}
-}
-
 void exam()
 {
-	switch(choice)
+	mode=choice; //1加法 2减法 3乘法 4除法 5混合运算
+	calculation();
+}
+
+void calculation()
+{
+	correct=0;
+	srand(time(0));
+	for(i=0;i<n;i++)
 	{
-		case 1:
-			addtion();
-			break;
-		case 2:
-			subtraction();
-			break;
-		case 3:
-			multiplication();
-			break;
-		case 4:
-			division();
-			break;
-		case 5:
-			mix();
-			break;
+		putimage(0,0,&board);
+		a=rand()%limit+1;
+		b=rand()%limit+1;
+		key=a+b;
+		sprintf(s,"%d＋%d＝？",a,b);
+		outtextxy(200,120,s);
+		InputBox(s,10,"告诉本王你的答案");
+		c=0;
+		sscanf(s,"%d",&c);
+		if(c==key)
+		{
+		correct++;
+		}
+		if(c==key)
+		{
+			putimage(0,0,&right);
+		}
+		else
+		{
+			putimage(0,0,&error);
+		}
+		sprintf(s,"%d＋%d＝%d",a,b,key);
+		outtextxy(200,120,s);
+		sprintf(s,"你给出的答案为：%d",c);
+		outtextxy(200,170,s);
+		if(c==key)
+		{
+			sprintf(s,"答对啦~");
+		}
+		else
+		{
+			sprintf(s,"不对哦~");
+		}
+		outtextxy(200,270,s);
+		sprintf(s,"（任意键继续）");
+		outtextxy(200,320,s);
+		getch();
 	}
 }
 
